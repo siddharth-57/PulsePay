@@ -1,0 +1,9 @@
+# We avoid committing: virtual environments, secrets, cache files, IDE settings
+
+__pycache__/
+*.pyc
+.env
+venv/
+.idea/
+.vscode/
+.pytest_cache/

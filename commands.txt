@@ -1,0 +1,3 @@
+pip3 install fastapi uvicorn sqlalchemy psycopg2-binary celery redis python-dotenv alembic pydantic-settings
+pip3 freeze > requirements.txt
+
