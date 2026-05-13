@@ -1,3 +1,6 @@
 pip3 install fastapi uvicorn sqlalchemy psycopg2-binary celery redis python-dotenv alembic pydantic-settings
 pip3 freeze > requirements.txt
 
+docker compose up -d    #starts redis and PostgreSQL container
+
+uvicorn backend.app.main:app --reload   #Starts backend FastAPI server locally on the machine.

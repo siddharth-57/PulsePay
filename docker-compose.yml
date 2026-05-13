@@ -1,0 +1,29 @@
+# Defines infrastructure containers:
+    #   PostgreSQL
+    #   Redis
+    # This allows consistent environments everywhere.
+
+version: '3.9'
+
+services:
+
+  postgres:
+    image: postgres:16
+
+    container_name: pulsepay_postgres
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pulsepay
+
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+
+    container_name: pulsepay_redis
+
+    ports:
+      - "6379:6379"
