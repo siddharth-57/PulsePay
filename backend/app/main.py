@@ -2,13 +2,16 @@
 
 # Responsibilities:
 #     initialize FastAPI
-#     define routes
+#     define routes 
 #     define health checks
+#     Connects transaction routes to FastAPI app, without this routes will never be available
 
 # Entire backend starts here.
 
 from fastapi import FastAPI
 from sqlalchemy import text
+
+from backend.api.transaction_routes import router as transaction_router
 
 from backend.core.database import engine
 
@@ -19,8 +22,12 @@ app = FastAPI(
 )
 
 
+app.include_router(transaction_router)
+
+
 @app.get("/")
 def root():
+
     return {
         "message": "PulsePay API Running"
     }

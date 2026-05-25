@@ -1,6 +1,19 @@
 pip3 install fastapi uvicorn sqlalchemy psycopg2-binary celery redis python-dotenv alembic pydantic-settings
 pip3 freeze > requirements.txt
 
-docker compose up -d    #starts redis and PostgreSQL container
 
-uvicorn backend.app.main:app --reload   #Starts backend FastAPI server locally on the machine.
+docker compose up -d    #creates and starts redis and PostgreSQL container
+docker compose start    #Starts redis and PostgreSQL container which were stopped
+
+
+uvicorn backend.app.main:app --reload   #Starts backend FastAPI server locally on the machine. http://127.0.0.1:8000/docs(or)health
+
+
+alembic init alembic    #Initialize Alembic
+alembic revision --autogenerate -m "create transactions tables" #Create Initial Migration
+alembic upgrade head    #Apply Migration
+
+docker exec -it pulsepay_postgres psql -U postgres -d pulsepay  #Enters PostgreSQL which is running as a container on docker
+
+#tasks are being routed to queue: 'payment_queue' and worker should also listen to the same queue to receive and execute tasks else it won't get any tasks to execute  
+celery -A backend.core.celery_app worker -Q payment_queue --loglevel=info    #Starts distributed worker process. Workers continuously: listen to Redis queue, execute background jobs, process payments asynchronously
