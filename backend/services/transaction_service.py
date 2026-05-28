@@ -20,6 +20,14 @@ from backend.services.payment_processor import (
     PaymentProcessor
 )
 
+#What This Step Does:
+# Replaces simplistic idempotency with production-style protection.
+# Now: same request → same response but same key + different payload → rejected
+# This is REAL payment API behavior.
+
+from backend.services.idempotency_service import (
+    IdempotencyService
+)                                                   
 
 class TransactionService:
 
@@ -31,11 +39,16 @@ class TransactionService:
         idempotency_key
     ):
 
+        payload = {
+            "amount": float(amount),
+            "currency": currency
+        }
+
         existing_transaction = (
-            TransactionRepository
-            .get_transaction_by_idempotency_key(
-                db,
-                idempotency_key
+            IdempotencyService.validate_idempotency(
+                db=db,
+                idempotency_key=idempotency_key,
+                payload=payload
             )
         )
 
@@ -50,6 +63,14 @@ class TransactionService:
                 idempotency_key=idempotency_key
             )
         )
+
+        IdempotencyService.store_idempotency_key(
+            db=db,
+            idempotency_key=idempotency_key,
+            payload=payload,
+            transaction_id=transaction.id
+        )
+
     #Adds async processing trigger after transaction creation.Now every payment automatically enters async processing flow.
         PaymentProcessor.process_payment(
             transaction.id

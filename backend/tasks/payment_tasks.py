@@ -16,9 +16,6 @@
 # Now every payment change becomes traceable.
 
 
-
-
-
 import random
 import time
 
@@ -40,6 +37,16 @@ from backend.services.audit_service import (
 
 from backend.services.dead_letter_service import (
     DeadLetterService
+)
+
+from backend.services.webhook_service import (
+    WebhookService
+)
+
+from backend.core.logger import logger
+
+from backend.services.metrics_service import (  
+    MetricsService
 )
 
 
@@ -73,6 +80,11 @@ def process_payment_task(
 
         db.commit()
 
+        MetricsService.increment_metric(
+            db,
+            "total_transactions"
+)
+
         AuditService.create_log(
             db=db,
             transaction_id=transaction.id,
@@ -80,7 +92,7 @@ def process_payment_task(
             new_status=TransactionStatus.PROCESSING
         )
 
-        print(
+        logger.info(
             f"Processing transaction "
             f"{transaction_id}"
         )
@@ -103,7 +115,7 @@ def process_payment_task(
 
             db.commit()
 
-            print(
+            logger.info(
                 f"Transaction {transaction_id} "
                 f"failed. Retry count: "
                 f"{transaction.retry_count}"
@@ -121,6 +133,17 @@ def process_payment_task(
                 )
 
                 db.commit()
+
+                MetricsService.increment_metric(
+                    db,
+                    "failed_transactions"
+                )
+
+                WebhookService.create_webhook_event(
+                    db=db,
+                    transaction_id=transaction.id,
+                    event_type="PAYMENT_FAILED"
+                )
 
                 AuditService.create_log(
                     db=db,
@@ -147,6 +170,17 @@ def process_payment_task(
 
         db.commit()
 
+        MetricsService.increment_metric(
+            db,
+            "successful_transactions"
+)
+
+        WebhookService.create_webhook_event(    #Automatically creates webhooks after: successful or failed payments
+            db=db,
+            transaction_id=transaction.id,
+            event_type="PAYMENT_SUCCESS"
+        )
+
         AuditService.create_log(
             db=db,
             transaction_id=transaction.id,
@@ -154,7 +188,7 @@ def process_payment_task(
             new_status=TransactionStatus.SUCCESS
         )
 
-        print(
+        logger.info(
             f"Transaction {transaction_id} "
             f"completed successfully"
         )
@@ -172,3 +206,10 @@ def process_payment_task(
 # SUCCESS/FAILED audit log
 
 # This creates a real payment event history system.
+
+# STEP 7.2 — Replace Print Statements In Payment Worker
+# What This Step Does: Migrates payment worker to structured logging.
+# Improves:
+#     readability
+#     debugging
+#     production readiness

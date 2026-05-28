@@ -15,15 +15,24 @@ from backend.api.transaction_routes import router as transaction_router
 
 from backend.core.database import engine
 
+from backend.core.request_middleware import (
+    log_requests
+)
+
+from backend.api.metrics_routes import (
+    router as metrics_router
+)
 
 app = FastAPI(
     title="PulsePay",
     version="1.0.0"
 )
 
+app.middleware("http")(log_requests)    #Register Middleware In FastAPI. Activates request tracing middleware.
 
 app.include_router(transaction_router)
 
+app.include_router(metrics_router)  #Makes metrics endpoint accessible.
 
 @app.get("/")
 def root():

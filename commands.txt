@@ -17,3 +17,4 @@ docker exec -it pulsepay_postgres psql -U postgres -d pulsepay  #Enters PostgreS
 
 #tasks are being routed to queue: 'payment_queue' and worker should also listen to the same queue to receive and execute tasks else it won't get any tasks to execute  
 celery -A backend.core.celery_app worker -Q payment_queue --loglevel=info    #Starts distributed worker process. Workers continuously: listen to Redis queue, execute background jobs, process payments asynchronously
+celery -A backend.core.celery_app worker -Q webhook_queue --loglevel=info

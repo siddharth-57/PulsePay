@@ -22,6 +22,13 @@ from backend.core.database import Base
 
 from backend.models.transaction import Transaction
 from backend.models.audit_log import AuditLog
+from backend.models.webhook_event import WebhookEvent
+from backend.models.idempotency_key import (
+    IdempotencyKey
+)
+from backend.models.system_metrics import (
+    SystemMetrics
+)
 
 target_metadata = Base.metadata
 
