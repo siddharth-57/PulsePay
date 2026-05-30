@@ -1,0 +1,11 @@
+# What This Step Does: Prevents unnecessary files from entering Docker image.
+# This improves:
+#     build speed
+#     image size
+#     security
+
+venv
+__pycache__
+*.pyc
+.git
+.env
