@@ -1,4 +1,4 @@
-# This File Verifies that the monitoring endpoint is reachable.
+# This File Verifies that the monitoring endpoint API is reachable.
 from tests.conftest import client
 
 def test_metrics_endpoint():

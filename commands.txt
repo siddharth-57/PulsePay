@@ -19,4 +19,22 @@ docker exec -it pulsepay_postgres psql -U postgres -d pulsepay  #Enters PostgreS
 celery -A backend.core.celery_app worker -Q payment_queue --loglevel=info    #Starts distributed worker process. Workers continuously: listen to Redis queue, execute background jobs, process payments asynchronously
 celery -A backend.core.celery_app worker -Q webhook_queue --loglevel=info
 
+#Testing:
 pytest #Run Tests
+pytest --cov=backend    # Measures tested code percentage.Measures how much of the PulsePay codebase is exercised by tests.
+pytest --cov=backend --cov-report=html  #Generate HTML Coverage Report
+
+What This Report Does
+Shows:
+    tested files
+    untested files
+    missed lines
+    coverage %
+open htmlcov/index.html                 #Mac command: Open Report 
+
+pytest -v       #Verify Entire Test Suite
+pytest tests/test_idempotency.py -v
+
+make test           #Tests the Makefile
+make coverage       #Coverage Report
+make coverage-html  

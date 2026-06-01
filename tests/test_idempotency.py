@@ -1,4 +1,5 @@
 # What This File Does: Tests that duplicate requests do not create duplicate transactions.
+#same request + same idempotency key = same transaction
 
 from tests.conftest import client
 

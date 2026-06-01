@@ -1,6 +1,6 @@
 # What This File Does
 
-# Verifies:
+# Verifies and tests audit logging services:
 #     AuditService exists
 #     create_log method exists
 

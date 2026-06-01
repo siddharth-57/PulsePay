@@ -1,5 +1,6 @@
 # What This File Does
 # Tests the core payment simulation engine independently from Celery.
+#What This File Does, Verifies payment simulation works.
 
 from backend.services.payment_processor import (
     PaymentProcessor
