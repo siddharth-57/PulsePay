@@ -23,6 +23,12 @@ from backend.api.metrics_routes import (
     router as metrics_router
 )
 
+# Register User Routes
+# What This Step Does: Adds user API to FastAPI.
+from backend.api.user_routes import (
+    router as user_router
+)
+
 app = FastAPI(
     title="PulsePay",
     version="1.0.0"
@@ -33,6 +39,8 @@ app.middleware("http")(log_requests)    #Register Middleware In FastAPI. Activat
 app.include_router(transaction_router)
 
 app.include_router(metrics_router)  #Makes metrics endpoint accessible.
+
+app.include_router(user_router)     #Adds user API to FastAPI.
 
 @app.get("/")
 def root():

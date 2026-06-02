@@ -27,3 +27,15 @@ SessionLocal = sessionmaker(    #A session is like a temporary conversation with
 )
 
 Base = declarative_base()   #This is the foundation for all your database tables/models.
+
+def get_db():
+
+    db = SessionLocal()
+
+    try:
+
+        yield db
+
+    finally:
+
+        db.close()
