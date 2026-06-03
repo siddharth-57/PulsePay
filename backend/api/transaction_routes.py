@@ -23,6 +23,10 @@ from backend.services.transaction_service import (
     TransactionService
 )
 
+from backend.core.auth import (
+    get_current_user
+)
+
 router = APIRouter(
     prefix="/transactions",
     tags=["Transactions"]
@@ -36,6 +40,9 @@ router = APIRouter(
 def create_transaction(
     request: CreateTransactionRequest,
     db: Session = Depends(get_db),
+    current_user = Depends(
+        get_current_user
+    ),
     idempotency_key: str = Header(...)
 ):
 

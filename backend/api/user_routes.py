@@ -28,6 +28,10 @@ from backend.services.auth_service import (
     AuthService
 )
 
+from backend.core.auth import (
+    get_current_user
+)
+
 router = APIRouter(
     prefix="/users",
     tags=["Users"]
@@ -84,3 +88,19 @@ def login(
         )
 
     return result
+
+
+# Create Protected Test Endpoint
+# FastAPI automatically ensures: Valid JWT exists AND User exists
+@router.get("/me")
+def get_me(
+    current_user = Depends(
+        get_current_user
+    )
+):
+
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "role": current_user.role
+    }
