@@ -32,6 +32,12 @@ from backend.core.auth import (
     get_current_user
 )
 
+from fastapi import Request
+
+from backend.core.rate_limiter import (
+    limiter
+)
+
 router = APIRouter(
     prefix="/users",
     tags=["Users"]
@@ -69,7 +75,9 @@ def create_user(
     
 #Login Endpoint
 @router.post("/login")
+@limiter.limit("5/minute")
 def login(
+    request: Request,
     payload: LoginRequest,
     db: Session = Depends(get_db)
 ):

@@ -4,6 +4,10 @@ pip3 freeze > requirements.txt  #"Take all Python packages currently installed i
 
 docker compose up -d    #creates and starts redis and PostgreSQL container
 docker compose start    #Starts redis and PostgreSQL container which were stopped
+docker compose stop
+docker compose restart
+docker compose down
+docker compose up -d --build
 
 
 uvicorn backend.app.main:app --reload   #Starts backend FastAPI server locally on the machine. http://127.0.0.1:8000/docs(or)health

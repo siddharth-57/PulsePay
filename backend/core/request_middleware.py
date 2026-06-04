@@ -26,9 +26,10 @@ async def log_requests(
     start_time = time.time()
 
     logger.info(
-        f"Request started | "
-        f"request_id={request_id} | "
-        f"path={request.url.path}"
+    f"Request started | "
+    f"request_id={request_id} | "
+    f"method={request.method} | "
+    f"path={request.url.path}"
     )
 
     response = await call_next(request)

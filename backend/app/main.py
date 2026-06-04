@@ -29,9 +29,30 @@ from backend.api.user_routes import (
     router as user_router
 )
 
+import redis
+
+from backend.core.config import (
+    settings
+)
+
+
+from slowapi.errors import RateLimitExceeded
+from slowapi import _rate_limit_exceeded_handler
+from backend.core.rate_limiter import (
+    limiter
+)
+
 app = FastAPI(
     title="PulsePay",
     version="1.0.0"
+)
+
+#adding limiter to limit the number of requests
+app.state.limiter = limiter
+
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler
 )
 
 app.middleware("http")(log_requests)    #Register Middleware In FastAPI. Activates request tracing middleware.
@@ -49,16 +70,75 @@ def root():
         "message": "PulsePay API Running"
     }
 
-
+# Health: Is the application alive?
 @app.get("/health")
 def health_check():
 
-    with engine.connect() as connection:
-        connection.execute(text("SELECT 1"))
+    db_status = "healthy"
+    redis_status = "healthy"
+
+    try:
+
+        with engine.connect() as connection:
+
+            connection.execute(
+                text("SELECT 1")
+            )
+
+    except Exception:
+
+        db_status = "unhealthy"
+
+    try:
+
+        redis_client = redis.from_url(
+            settings.REDIS_URL
+        )
+
+        redis_client.ping()
+
+    except Exception:
+
+        redis_status = "unhealthy"
+
+    overall_status = (
+        "healthy"
+        if (
+            db_status == "healthy"
+            and
+            redis_status == "healthy"
+        )
+        else
+        "unhealthy"
+    )
 
     return {
-        "status": "healthy"
+        "status": overall_status,
+        "database": db_status,
+        "redis": redis_status
     }
+
+#Readiness: Can the application serve traffic?
+@app.get("/ready")
+def readiness_check():
+
+    try:
+
+        with engine.connect() as connection:
+
+            connection.execute(
+                text("SELECT 1")
+            )
+
+        return {
+            "status": "ready"
+        }
+
+    except Exception:
+
+        return {
+            "status": "not_ready"
+        }
 
 # What Swagger Does: Automatically generates API documentation/testing UI.
 # Very useful for backend development.

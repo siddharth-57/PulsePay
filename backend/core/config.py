@@ -2,7 +2,9 @@
 # Centralized config management.
 
 from pydantic_settings import BaseSettings
-
+from pydantic_settings import (
+    SettingsConfigDict
+)
 
 class Settings(BaseSettings):
 
@@ -14,15 +16,13 @@ class Settings(BaseSettings):
 
     PAYMENT_RETRY_DELAY: int = 10       # Defines delay before retry
 
-    JWT_SECRET_KEY: str = (
-    "pulsepay-super-secret-key")
+    JWT_SECRET_KEY: str
 
-    JWT_ALGORITHM: str = "HS256"
+    JWT_ALGORITHM: str
+    
+    JWT_EXPIRATION_MINUTES: int
 
-    JWT_EXPIRATION_MINUTES: int = 60
-
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Settings()

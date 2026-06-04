@@ -21,6 +21,7 @@ from pydantic import BaseModel
 
 from backend.models.transaction_status import TransactionStatus
 
+from pydantic import ConfigDict
 
 class CreateTransactionRequest(BaseModel):
 
@@ -41,6 +42,4 @@ class TransactionResponse(BaseModel):
 
     retry_count: int   #Exposes retry information in APIs.Clients/operators can now see: how many retries occurred. This improves observability.
 
-    class Config:
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

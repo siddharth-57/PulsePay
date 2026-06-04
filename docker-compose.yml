@@ -11,7 +11,8 @@
   # PostgreSQL
 # automatically.
 
-version: "3.9"
+
+# version: "3.9"
 
 services:
 
@@ -25,6 +26,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: pulsepay
+
+    #docker healthcheck: Currently Docker only knows:Container Running
+    #It does NOT know: Application Healthy, A crashed app can still leave a container alive.
+    healthcheck:            
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
     ports:
       - "5432:5432"
@@ -41,6 +50,12 @@ services:
 
     ports:
       - "6379:6379"
+    
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 
   fastapi:
@@ -61,6 +76,12 @@ services:
     depends_on:
       - postgres
       - redis
+    
+    healthcheck:
+      test: ["CMD-SHELL","python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
     env_file:
       - .env
