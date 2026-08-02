@@ -169,16 +169,24 @@ The project demonstrates how modern payment platforms handle transaction process
 
 ## Running Locally
 
-### Clone Repository
+> **Prerequisites**
+>
+> Before getting started, ensure you have the following installed and running:
+>
+> - Git
+> - Docker Desktop (or Docker Engine with Docker Compose)
+> - Docker is running on your machine
+
+### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/siddharth-57/PulsePay.git
 cd PulsePay
 ```
 
-### Configure Environment
+### 2. Configure Environment Variables
 
-Create a `.env` file:
+Create a `.env` file in the project root:
 
 ```env
 DATABASE_URL=postgresql://postgres:postgres@postgres:5432/pulsepay
@@ -189,34 +197,57 @@ JWT_ALGORITHM=HS256
 JWT_EXPIRATION_MINUTES=60
 ```
 
-### Start Infrastructure
+### 3. Build and Start the Services
 
 ```bash
 docker compose up -d --build
 ```
 
-### Run Database Migrations
+This command will:
+
+- Build the FastAPI application image using the project's `Dockerfile`
+- Install all Python dependencies from `requirements.txt`
+- Start the following containers:
+  - FastAPI
+  - PostgreSQL
+  - Redis
+  - Payment Worker
+  - Webhook Worker
+
+> **Note:** The initial build may take a few minutes as Docker downloads the required images and installs dependencies.
+
+### 4. Run Database Migrations
 
 ```bash
-alembic upgrade head
+docker compose exec fastapi alembic upgrade head
 ```
 
-### Access API
+This creates the required database tables.
+
+### 5. Access the API
+
+API:
+
+```
+http://localhost:8000
+```
 
 Swagger UI:
 
-```text
+```
 http://localhost:8000/docs
 ```
 
----
-
-## Testing
-
-Run all tests:
+### 6. Run Tests
 
 ```bash
-pytest -v
+docker compose exec fastapi pytest -v
+```
+
+### 7. Stop the Services
+
+```bash
+docker compose down
 ```
 
 ---
@@ -254,5 +285,3 @@ pytest -v
 ## Author
 
 Siddharth Chaudhari
-
-Built as a backend engineering project to demonstrate production-grade software development practices and distributed systems concepts.

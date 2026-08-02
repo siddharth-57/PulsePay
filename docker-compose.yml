@@ -4,6 +4,7 @@
     # This allows consistent environments everywhere.
 
 # What This Step Does: Creates FULL infrastructure orchestration.
+#This file also runs the Dockerfile while building the containers for different services
 # Now Docker Compose will manage:
   # APIs
   # workers
@@ -60,7 +61,7 @@ services:
 
   fastapi:
 
-    build: .
+    build: .    #This runs the Dockerfile while building the containers for different services
 
     container_name: pulsepay_fastapi
 
