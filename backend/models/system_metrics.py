@@ -6,7 +6,6 @@ from backend.core.database import Base
 
 
 class SystemMetrics(Base):
-
     __tablename__ = "system_metrics"
 
     metric_name = Column(

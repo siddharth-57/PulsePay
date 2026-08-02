@@ -10,16 +10,11 @@
 
 import time
 import uuid
-
 from fastapi import Request
 
 from backend.core.logger import logger
 
-
-async def log_requests(
-    request: Request,
-    call_next
-):
+async def log_requests(request: Request, call_next):
 
     request_id = str(uuid.uuid4())
 
@@ -53,10 +48,10 @@ async def log_requests(
 
 # WHAT THIS NOW ADDS:
 # Every request now logs:
-#     Field	Purpose
+#     Field	        Purpose
 #     request_id	Trace request lifecycle
-#     path	API endpoint
-#     duration	API execution time
+#     path	        API endpoint
+#     duration	    API execution time
 #     status_code	Response result
 
-# This is REAL observability engineering.
+# This is useful for observability engineering.

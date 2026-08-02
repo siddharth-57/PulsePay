@@ -2,9 +2,7 @@
 # Centralized config management.
 
 from pydantic_settings import BaseSettings
-from pydantic_settings import (
-    SettingsConfigDict
-)
+from pydantic_settings import (SettingsConfigDict)
 
 class Settings(BaseSettings):
 
@@ -24,5 +22,5 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env")
 
-
+# The object settings will now provide access to all environment variables 
 settings = Settings()

@@ -1,9 +1,8 @@
 # Role-Based Authorization
 # Authenticated User -> Role Checked -> Allow / Deny
+# This file checks if the given user is an admin or not
 
-from fastapi import (
-    HTTPException
-)
+from fastapi import (HTTPException)
 
 
 def require_admin(

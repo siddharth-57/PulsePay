@@ -8,12 +8,13 @@
 # When building a backend (especially with FastAPI + SQLAlchemy), you should not manually connect to the database everywhere in your code.
 # Instead, you create one reusable database configuration file and every other file imports it.
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
 
 # SQLAlchemy is a Python library used to work with databases like PostgreSQL, MySQL, SQLite, etc.
 # It acts as a bridge between: your Python code and your database, you can write code in python and this library will convert it into SQL behind the scenes
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 from backend.core.config import settings
 
@@ -29,13 +30,8 @@ SessionLocal = sessionmaker(    #A session is like a temporary conversation with
 Base = declarative_base()   #This is the foundation for all your database tables/models.
 
 def get_db():
-
     db = SessionLocal()
-
     try:
-
-        yield db
-
+        yield db            # Makes the session available to the API endpoint
     finally:
-
         db.close()

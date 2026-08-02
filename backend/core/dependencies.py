@@ -7,15 +7,11 @@
 #     sessions must be properly closed
 #     DB connections must not leak
 
-from backend.core.database import SessionLocal
+from backend.core.database import (SessionLocal,get_db)
 
-
-def get_db():
-
-    db = SessionLocal()
-
-    try:
-        yield db
-
-    finally:
-        db.close()
+# def get_db():
+#     db = SessionLocal()
+#     try:
+#         yield db
+#     finally:
+#         db.close()

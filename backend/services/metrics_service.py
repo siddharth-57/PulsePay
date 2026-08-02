@@ -9,13 +9,10 @@
 
 from sqlalchemy.orm import Session
 
-from backend.models.system_metrics import (
-    SystemMetrics
-)
+from backend.models.system_metrics import (SystemMetrics)
 
 
 class MetricsService:
-
     @staticmethod
     def increment_metric(
         db: Session,
