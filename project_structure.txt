@@ -1,0 +1,157 @@
+.
+├── ~$cumentation.docx
+├── alembic
+│   ├── env.py
+│   ├── README
+│   ├── script.py.mako
+│   └── versions
+│       ├── 28c7f97b493f_create_webhook_events_table.py
+│       ├── d785d50c4f4a_create_users_table.py
+│       ├── ee2fd18538bf_create_transactions_tables.py
+│       ├── f8b1bf9510f5_create_system_metrics_table.py
+│       └── fc62e2746286_create_idempotency_keys_table.py
+├── alembic.ini
+├── backend
+│   ├── __init__.py
+│   ├── api
+│   │   ├── __init__.py
+│   │   ├── metrics_routes.py
+│   │   ├── transaction_routes.py
+│   │   └── user_routes.py
+│   ├── app
+│   │   ├── __init__.py
+│   │   └── main.py
+│   ├── core
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── authorization.py
+│   │   ├── celery_app.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── dependencies.py
+│   │   ├── hash_utils.py
+│   │   ├── logger.py
+│   │   ├── rate_limiter.py
+│   │   ├── request_middleware.py
+│   │   └── security.py
+│   ├── events
+│   │   └── __init__.py
+│   ├── models
+│   │   ├── __init__.py
+│   │   ├── audit_log.py
+│   │   ├── idempotency_key.py
+│   │   ├── system_metrics.py
+│   │   ├── transaction_status.py
+│   │   ├── transaction.py
+│   │   ├── user.py
+│   │   └── webhook_event.py
+│   ├── repositories
+│   │   ├── __init__.py
+│   │   ├── idempotency_repository.py
+│   │   ├── transaction_repository.py
+│   │   ├── user_repository.py
+│   │   └── webhook_repository.py
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   ├── transaction.py
+│   │   └── user.py
+│   ├── services
+│   │   ├── __init__.py
+│   │   ├── audit_service.py
+│   │   ├── auth_service.py
+│   │   ├── dead_letter_service.py
+│   │   ├── idempotency_service.py
+│   │   ├── metrics_service.py
+│   │   ├── payment_processor.py
+│   │   ├── transaction_service.py
+│   │   ├── user_service.py
+│   │   └── webhook_service.py
+│   ├── tasks
+│   │   ├── __init__.py
+│   │   ├── payment_tasks.py
+│   │   └── webhook_tasks.py
+│   ├── tests
+│   │   └── __init__.py
+│   └── workers
+│       └── __init__.py
+├── commands.txt
+├── docker-compose.yml
+├── Dockerfile
+├── docs
+│   ├── architecture.md
+│   ├── database-schema.md
+│   ├── event-flow.md
+│   ├── failure-scenarios.md
+│   ├── idempotency-design.md
+│   ├── scaling-notes.md
+│   └── transaction-flow.md
+├── Documentation.docx
+├── htmlcov
+│   ├── class_index.html
+│   ├── coverage_html_cb_6fb7b396.js
+│   ├── favicon_32_cb_58284776.png
+│   ├── function_index.html
+│   ├── index.html
+│   ├── keybd_closed_cb_ce680311.png
+│   ├── status.json
+│   ├── style_cb_6b508a39.css
+│   ├── z_3f2cd62ee6df297d___init___py.html
+│   ├── z_3f2cd62ee6df297d_metrics_routes_py.html
+│   ├── z_3f2cd62ee6df297d_transaction_routes_py.html
+│   ├── z_58b7c7bbf04dc5b3___init___py.html
+│   ├── z_58b7c7bbf04dc5b3_idempotency_repository_py.html
+│   ├── z_58b7c7bbf04dc5b3_transaction_repository_py.html
+│   ├── z_58b7c7bbf04dc5b3_webhook_repository_py.html
+│   ├── z_5defc1d2baf32232___init___py.html
+│   ├── z_9b5d3c41184f4a9e___init___py.html
+│   ├── z_bc41b973ac597a35___init___py.html
+│   ├── z_bc41b973ac597a35_audit_log_py.html
+│   ├── z_bc41b973ac597a35_idempotency_key_py.html
+│   ├── z_bc41b973ac597a35_system_metrics_py.html
+│   ├── z_bc41b973ac597a35_transaction_py.html
+│   ├── z_bc41b973ac597a35_transaction_status_py.html
+│   ├── z_bc41b973ac597a35_webhook_event_py.html
+│   ├── z_be11d8523f3b9148___init___py.html
+│   ├── z_be11d8523f3b9148_transaction_py.html
+│   ├── z_c657b57f38586ccb___init___py.html
+│   ├── z_c657b57f38586ccb_celery_app_py.html
+│   ├── z_c657b57f38586ccb_config_py.html
+│   ├── z_c657b57f38586ccb_database_py.html
+│   ├── z_c657b57f38586ccb_dependencies_py.html
+│   ├── z_c657b57f38586ccb_hash_utils_py.html
+│   ├── z_c657b57f38586ccb_logger_py.html
+│   ├── z_c657b57f38586ccb_request_middleware_py.html
+│   ├── z_cfe43d87c9a3266a___init___py.html
+│   ├── z_cfe43d87c9a3266a_payment_tasks_py.html
+│   ├── z_cfe43d87c9a3266a_webhook_tasks_py.html
+│   ├── z_d0e9dd6af06f5f6e___init___py.html
+│   ├── z_d0e9dd6af06f5f6e_audit_service_py.html
+│   ├── z_d0e9dd6af06f5f6e_dead_letter_service_py.html
+│   ├── z_d0e9dd6af06f5f6e_idempotency_service_py.html
+│   ├── z_d0e9dd6af06f5f6e_metrics_service_py.html
+│   ├── z_d0e9dd6af06f5f6e_payment_processor_py.html
+│   ├── z_d0e9dd6af06f5f6e_transaction_service_py.html
+│   ├── z_d0e9dd6af06f5f6e_webhook_service_py.html
+│   ├── z_db5c5b9d094212ab___init___py.html
+│   ├── z_db5c5b9d094212ab_main_py.html
+│   ├── z_e17dcb4e28158375___init___py.html
+│   └── z_ff69d19daaad5b49___init___py.html
+├── Makefile
+├── project_structure.txt
+├── pytest.ini
+├── README.md
+├── requirements.txt
+└── tests
+    ├── __init__.py
+    ├── conftest.py
+    ├── test_audit_service.py
+    ├── test_config.py
+    ├── test_health.py
+    ├── test_idempotency.py
+    ├── test_metrics.py
+    ├── test_payment_processor.py
+    ├── test_payment_worker.py
+    ├── test_transactions.py
+    └── test_webhook_service.py
+
+18 directories, 137 files
