@@ -20,6 +20,7 @@ REQUEST_COUNTS = [100, 500, 1000, 5000]
 CONCURRENT_WORKERS = 50
 
 TRANSACTION_POLL_INTERVAL = 1
+TRANSACTION_POLL_TIMEOUT = 120
 
 
 def login() -> str:
@@ -124,9 +125,12 @@ def print_api_results(
     print("============================================")
 
 
-def get_transaction_status(transaction_id):
+def get_transaction_status(token, transaction_id):
     response = httpx.get(
-        f"{BASE_URL}/transactions/{transaction_id}"
+        f"{BASE_URL}/transactions/{transaction_id}",
+        headers={
+            "Authorization": f"Bearer {token}",
+        },
     )
 
     if not response.is_success:
@@ -135,24 +139,27 @@ def get_transaction_status(transaction_id):
     return response.json()["status"]
 
 
-def collect_transaction_results(transaction_ids):
+def collect_transaction_results(token, transaction_ids):
     successful_transactions = 0
     failed_transactions = 0
+    pending_transactions = 0
+
+    start = time.perf_counter()
 
     remaining_ids = set(transaction_ids)
 
-    processing_start = time.perf_counter()
-
-    print()
-    print("Waiting for payment transactions to complete...")
-
     while remaining_ids:
+        if time.perf_counter() - start >= TRANSACTION_POLL_TIMEOUT:
+            pending_transactions = len(remaining_ids)
+            break
 
         completed_ids = set()
 
         for transaction_id in remaining_ids:
-
-            status = get_transaction_status(transaction_id)
+            status = get_transaction_status(
+                token,
+                transaction_id,
+            )
 
             if status == "SUCCESS":
                 successful_transactions += 1
@@ -164,70 +171,30 @@ def collect_transaction_results(transaction_ids):
 
         remaining_ids -= completed_ids
 
-        completed_count = (
-            successful_transactions
-            + failed_transactions
-        )
-
-        print(
-            f"\rTransactions completed: "
-            f"{completed_count}/{len(transaction_ids)}",
-            end="",
-            flush=True,
-        )
-
         if remaining_ids:
             time.sleep(TRANSACTION_POLL_INTERVAL)
-
-    processing_time = (
-        time.perf_counter()
-        - processing_start
-    )
 
     total_transactions = len(transaction_ids)
 
     print()
-    print()
-    print(
-        "========== PAYMENT TRANSACTION RESULTS =========="
-    )
+    print("========== PAYMENT TRANSACTION RESULTS ==========")
+    print(f"Total transactions created: {total_transactions}")
+    print(f"Successful transactions: {successful_transactions}")
+    print(f"Failed transactions: {failed_transactions}")
+    print(f"Pending transactions: {pending_transactions}")
 
-    print(
-        f"Total transactions created: "
-        f"{total_transactions}"
-    )
+    if total_transactions > 0:
+        print(
+            f"Transaction Success Rate: "
+            f"{(successful_transactions / total_transactions) * 100:.2f}%"
+        )
 
-    print(
-        f"Successful transactions: "
-        f"{successful_transactions}"
-    )
+        print(
+            f"Transaction Failure Rate: "
+            f"{(failed_transactions / total_transactions) * 100:.2f}%"
+        )
 
-    print(
-        f"Failed transactions: "
-        f"{failed_transactions}"
-    )
-
-    print(
-        "Pending transactions: 0"
-    )
-
-    print(
-        f"Transaction Success Rate: "
-        f"{(successful_transactions / total_transactions) * 100:.2f}%"
-    )
-
-    print(
-        f"Transaction Failure Rate: "
-        f"{(failed_transactions / total_transactions) * 100:.2f}%"
-    )
-
-    print(
-        f"Total payment processing time: "
-        f"{processing_time:.2f} seconds"
-    )
-
-    print(
-        "=================================================")
+    print("=================================================")
 
 
 def run_sequential(token, total_requests):
@@ -239,10 +206,7 @@ def run_sequential(token, total_requests):
     total_start = time.perf_counter()
 
     for _ in range(total_requests):
-
-        response, latency, transaction_id = send_transaction(
-            token
-        )
+        response, latency, transaction_id = send_transaction(token)
 
         latencies.append(latency)
 
@@ -267,7 +231,8 @@ def run_sequential(token, total_requests):
     )
 
     collect_transaction_results(
-        transaction_ids
+        token,
+        transaction_ids,
     )
 
 
@@ -292,10 +257,7 @@ def run_concurrent(token, total_requests):
         ]
 
         for future in as_completed(futures):
-
-            response, latency, transaction_id = (
-                future.result()
-            )
+            response, latency, transaction_id = future.result()
 
             latencies.append(latency)
 
@@ -303,9 +265,7 @@ def run_concurrent(token, total_requests):
                 successful_requests += 1
 
                 if transaction_id:
-                    transaction_ids.append(
-                        transaction_id
-                    )
+                    transaction_ids.append(transaction_id)
 
             else:
                 failed_requests += 1
@@ -322,7 +282,8 @@ def run_concurrent(token, total_requests):
     )
 
     collect_transaction_results(
-        transaction_ids
+        token,
+        transaction_ids,
     )
 
 
@@ -330,7 +291,6 @@ def main():
     token = login()
 
     for total_requests in REQUEST_COUNTS:
-
         print()
         print(
             f"Running sequential test: "
