@@ -63,3 +63,8 @@ class Transaction(Base):
         server_default=func.now(),
         onupdate=func.now()
     )
+    
+    completed_at = Column(
+        DateTime(timezone=True), 
+        nullable=True
+    )

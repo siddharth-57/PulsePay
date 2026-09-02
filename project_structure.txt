@@ -1,11 +1,11 @@
 .
-├── ~$cumentation.docx
 ├── alembic
 │   ├── env.py
 │   ├── README
 │   ├── script.py.mako
 │   └── versions
 │       ├── 28c7f97b493f_create_webhook_events_table.py
+│       ├── a50709dca648_add_completed_at_to_transactions.py
 │       ├── d785d50c4f4a_create_users_table.py
 │       ├── ee2fd18538bf_create_transactions_tables.py
 │       ├── f8b1bf9510f5_create_system_metrics_table.py
@@ -34,8 +34,6 @@
 │   │   ├── rate_limiter.py
 │   │   ├── request_middleware.py
 │   │   └── security.py
-│   ├── events
-│   │   └── __init__.py
 │   ├── models
 │   │   ├── __init__.py
 │   │   ├── audit_log.py
@@ -66,14 +64,12 @@
 │   │   ├── transaction_service.py
 │   │   ├── user_service.py
 │   │   └── webhook_service.py
-│   ├── tasks
-│   │   ├── __init__.py
-│   │   ├── payment_tasks.py
-│   │   └── webhook_tasks.py
-│   ├── tests
-│   │   └── __init__.py
-│   └── workers
-│       └── __init__.py
+│   └── tasks
+│       ├── __init__.py
+│       ├── payment_tasks.py
+│       └── webhook_tasks.py
+├── benchmarks
+│   └── load_test.py
 ├── commands.txt
 ├── docker-compose.yml
 ├── Dockerfile
@@ -141,6 +137,7 @@
 ├── pytest.ini
 ├── README.md
 ├── requirements.txt
+├── test_results.txt
 └── tests
     ├── __init__.py
     ├── conftest.py
@@ -154,4 +151,4 @@
     ├── test_transactions.py
     └── test_webhook_service.py
 
-18 directories, 137 files
+16 directories, 136 files

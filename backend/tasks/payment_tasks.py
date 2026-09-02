@@ -18,6 +18,7 @@
 
 import random
 import time
+from sqlalchemy.sql import func
 
 from backend.core.config import settings
 
@@ -131,6 +132,8 @@ def process_payment_task(
                 transaction.status = (
                     TransactionStatus.FAILED
                 )
+                
+                transaction.completed_at = func.now()
 
                 db.commit()
 
@@ -167,6 +170,8 @@ def process_payment_task(
         transaction.status = (
             TransactionStatus.SUCCESS
         )
+        
+        transaction.completed_at = func.now()
 
         db.commit()
 
