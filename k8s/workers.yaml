@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pulsepay-payment-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pulsepay-payment-worker
+  template:
+    metadata:
+      labels:
+        app: pulsepay-payment-worker
+    spec:
+      containers:
+        - name: payment-worker
+          image: pulsepay-fastapi:latest
+          imagePullPolicy: Never
+          command:
+            - celery
+            - -A
+            - backend.core.celery_app
+            - worker
+            - -Q
+            - payment_queue
+            - --loglevel=info
+          env:
+            - name: DATABASE_URL
+              value: postgresql://postgres:postgres@postgres:5432/pulsepay
+            - name: REDIS_URL
+              value: redis://redis:6379/0
+            - name: JWT_ALGORITHM
+              value: HS256
+            - name: JWT_EXPIRATION_MINUTES
+              value: "60"
+            - name: JWT_SECRET_KEY
+              value: super-secret-dev-key
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pulsepay-webhook-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pulsepay-webhook-worker
+  template:
+    metadata:
+      labels:
+        app: pulsepay-webhook-worker
+    spec:
+      containers:
+        - name: webhook-worker
+          image: pulsepay-fastapi:latest
+          imagePullPolicy: Never
+          command:
+            - celery
+            - -A
+            - backend.core.celery_app
+            - worker
+            - -Q
+            - webhook_queue
+            - --loglevel=info
+          env:
+            - name: DATABASE_URL
+              value: postgresql://postgres:postgres@postgres:5432/pulsepay
+            - name: REDIS_URL
+              value: redis://redis:6379/0
+            - name: JWT_ALGORITHM
+              value: HS256
+            - name: JWT_EXPIRATION_MINUTES
+              value: "60"
+            - name: JWT_SECRET_KEY
+              value: super-secret-dev-key

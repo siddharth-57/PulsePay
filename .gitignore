@@ -9,3 +9,4 @@ venv/
 .vscode/
 .pytest_cache/
 *.docx
+k8s/secret.yaml

@@ -99,6 +99,7 @@ def health_check():
 
     return {
         "status": overall_status,
+        "Version":"v2",
         "database": db_status,
         "redis": redis_status
     }

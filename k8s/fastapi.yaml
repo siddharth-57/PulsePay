@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pulsepay-fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pulsepay-fastapi
+  template:
+    metadata:
+      labels:
+        app: pulsepay-fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: pulsepay-fastapi:latest
+          imagePullPolicy: Never
+          command:
+            - uvicorn
+            - backend.app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: postgresql://postgres:postgres@postgres:5432/pulsepay
+            - name: REDIS_URL
+              value: redis://redis:6379/0
+            - name: JWT_ALGORITHM
+              value: HS256
+            - name: JWT_EXPIRATION_MINUTES
+              value: "60"
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pulsepay-secret
+                  key: JWT_SECRET_KEY
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi
+spec:
+  selector:
+    app: pulsepay-fastapi
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: NodePort
