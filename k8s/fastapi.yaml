@@ -14,8 +14,13 @@ spec:
     spec:
       containers:
         - name: fastapi
-          image: pulsepay-fastapi:latest
-          imagePullPolicy: Never
+          # image: pulsepay-fastapi:latest
+          # imagePullPolicy: Never
+          
+          # Using ECR
+          image: 320698388600.dkr.ecr.ap-south-1.amazonaws.com/pulsepay:latest
+          imagePullPolicy: Always
+          
           command:
             - uvicorn
             - backend.app.main:app
@@ -39,6 +44,8 @@ spec:
                 secretKeyRef:
                   name: pulsepay-secret
                   key: JWT_SECRET_KEY
+# We'll configure CPU/memory limits for the FastAPI container. 
+# This is useful because Kubernetes can then make scheduling decisions and prevent one workload from consuming unlimited resources.
           resources:
             requests:
               cpu: "100m"

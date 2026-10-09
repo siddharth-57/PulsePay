@@ -14,8 +14,14 @@ spec:
     spec:
       containers:
         - name: payment-worker
-          image: pulsepay-fastapi:latest
-          imagePullPolicy: Never
+
+          # image: pulsepay-fastapi:latest
+          # imagePullPolicy: Never
+
+          # Using AWS ECR
+          image: 320698388600.dkr.ecr.ap-south-1.amazonaws.com/pulsepay:latest
+          imagePullPolicy: Always
+
           command:
             - celery
             - -A
@@ -53,8 +59,14 @@ spec:
     spec:
       containers:
         - name: webhook-worker
-          image: pulsepay-fastapi:latest
-          imagePullPolicy: Never
+          
+          # image: pulsepay-fastapi:latest
+          # imagePullPolicy: Never
+
+          # Using AWS ECR
+          image: 320698388600.dkr.ecr.ap-south-1.amazonaws.com/pulsepay:latest
+          imagePullPolicy: Always
+
           command:
             - celery
             - -A
